@@ -24,4 +24,4 @@ toast_ground_schedule \
 --ces-max-time-s 1200 \
 --fp-radius-deg 5.0 \
 --patch SIMTARGET,1.0,${target_ra},${target_dec},${target_width} \
---out fake_blast_schedule.txt
+--out blast_schedule.txt
