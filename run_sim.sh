@@ -1,12 +1,12 @@
 #!/bin/bash
 
 fp_file=fake_blast.h5
-schedule=fake_blast_schedule.txt
-sample_rate=100.0
+schedule=./schedules/blast_schedule.txt
+sample_rate=80.0
 
 # This option is for testing.  It "thins" the focalplane
 # by a factor of 1/thinfp.  Set to "1" for all detectors.
-thinfp=8
+thinfp=100
 
 # Make sure that the product of these two numbers
 # does not exceed the number of physical cores.
@@ -25,8 +25,8 @@ mpirun -np ${mpi_procs} toast_sim_ground.py \
 --schedule ${schedule} \
 --sample_rate ${sample_rate} \
 `# Scanning params` \
---sim_ground.scan_rate_az '1.0 deg / s' \
---sim_ground.scan_accel_az '3.0 deg / s2' \
+--sim_ground.scan_rate_az '0.1 deg / s' \
+--sim_ground.scan_accel_az '1.0 deg / s2' \
 `# Disable atmosphere sim` \
 --sim_atmosphere.disable \
 `# Simulated sky signal from a map` \

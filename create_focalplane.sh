@@ -5,7 +5,7 @@ toast_fake_focalplane \
 --min_pix 1648 \
 --fwhm_arcmin 0.47 \
 --fov_deg 1.4 \
---sample_rate 200.0 \
+--sample_rate 80.0 \
 --bandcenter_ghz 1713 \
 # --pol_leakage 0.0 \
 # --psd_fknee 0.05 \
