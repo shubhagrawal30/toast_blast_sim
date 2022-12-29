@@ -2,11 +2,17 @@
 
 fp_file=fake_blast.h5
 schedule=./schedules/blast_schedule.txt
-sample_rate=80.0
+# Set to something small for testing sky coverage, etc
+sample_rate=10.0
+# sample_rate=80.0
+
+# Output directory
+out_dir="sim"
+mkdir -p ${out_dir}
 
 # This option is for testing.  It "thins" the focalplane
 # by a factor of 1/thinfp.  Set to "1" for all detectors.
-thinfp=100
+thinfp=8
 
 # Make sure that the product of these two numbers
 # does not exceed the number of physical cores.
@@ -19,9 +25,8 @@ omp_threads=2
 export OMP_NUM_THREADS=${omp_threads}
 
 mpirun -np ${mpi_procs} toast_sim_ground.py \
---out_dir "out_blast" \
 --focalplane ${fp_file} \
---thin_fp ${thinfp} \
+--thinfp ${thinfp} \
 --schedule ${schedule} \
 --sample_rate ${sample_rate} \
 `# Scanning params` \
@@ -30,7 +35,7 @@ mpirun -np ${mpi_procs} toast_sim_ground.py \
 `# Disable atmosphere sim` \
 --sim_atmosphere.disable \
 `# Simulated sky signal from a map` \
---scan_map.disable \
+--scan_wcs_map.disable \
 `# Noise simulation (from elevation-modulated focalplane parameters)` \
 --sim_noise.enable \
 `# Gain mismatch` \
@@ -40,24 +45,25 @@ mpirun -np ${mpi_procs} toast_sim_ground.py \
 `#--convolve_time_constant.disable` \
 `#--convolve_time_constant.tau '3 ms'` \
 `# Write to HDF5` \
-`#--save_hdf5.enable` \
+--save_hdf5.enable \
 `# Filter params` \
-`#--polyfilter1D.enable` \
+--polyfilter1D.disable \
 `#--polyfilter1D.order 3` \
-`#--polyfilter2D.enable` \
+--polyfilter2D.disable \
 `#--polyfilter2D.order 5` \
-`#--common_mode_filter.enable` \
+--common_mode_filter.disable \
 `# Pointing matrix` \
 --pixels_healpix_radec.disable \
 --pixels_healpix_radec.nside 2048 \
 --pixels_wcs_radec.enable \
---pixels_wcs_radec.projection "TAN" \
+`#--pixels_wcs_radec.auto_bounds` \
+--pixels_wcs_radec.projection "CAR" \
+--pixels_wcs_radec.resolution "(0.05 deg, 0.05 deg)" \
 `# Mapmaking params` \
 --mapmaker.iter_max 100 `# only used if templates enabled` \
 --mapmaker.map_rcond_threshold 1.0e-5 \
 --mapmaker.solve_rcond_threshold 1.0e-5 \
 `# Destriping offsets.  Disabling results in a binned map` \
---baselines.disable \
+--baselines.enable \
 --baselines.step_time "5.0 s" \
-`# Use one process group consisting of all processes` \
---job_group_size ${mpi_procs}
+--out_dir ${out_dir}
